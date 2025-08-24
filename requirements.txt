@@ -1,3 +1,31 @@
-flask 
-requests 
-python-dotenv
+# Core dependencies
+selenium==4.16.0
+requests==2.31.0
+python-dotenv==1.0.0
+beautifulsoup4==4.12.2
+lxml==4.9.3
+
+# Email functionality
+secure-smtplib==0.1.1
+
+# LLM API clients
+openai==1.6.1
+anthropic==0.8.1
+google-generativeai==0.3.2
+
+# Image processing for CAPTCHA
+Pillow==10.1.0
+opencv-python==4.8.1.78
+
+# Utilities
+fake-useragent==1.4.0
+undetected-chromedriver==3.5.4
+pyotp==2.9.0
+
+# Optional: Flask for web interface
+flask==3.0.0
+
+# Development dependencies
+pytest==7.4.3
+black==23.11.0
+flake8==6.1.0
