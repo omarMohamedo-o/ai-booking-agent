@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Booking Agent - Professional Ticket Automation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/umd/lucide.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(99, 102, 241, 0.4); }
+            50% { box-shadow: 0 0 40px rgba(99, 102, 241, 0.8); }
+        }
+        
+        @keyframes slide-in {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        @keyframes gradient-shift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .float-animation {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        .pulse-glow {
+            animation: pulse-glow 2s ease-in-out infinite;
+        }
+        
+        .slide-in {
+            animation: slide-in 0.3s ease-out;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(-45deg, #1e1b4b, #312e81, #1e40af, #1e3a8a);
+            background-size: 400% 400%;
+            animation: gradient-shift 15s ease infinite;
+        }
+        
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .ticket-flip {
+            transform-style: preserve-3d;
+            transition: transform 0.6s;
+        }
+        
+        .ticket-flip:hover {
+            transform: rotateY(180deg);
+        }
+        
+        .ticket-front, .ticket-back {
+            backface-visibility: hidden;
+        }
+        
+        .ticket-back {
+            transform: rotateY(180deg);
+        }
+        
+        .neural-pattern {
+            background-image: 
+                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.1) 0%, transparent 50%);
+        }
+        
+        .log-entry {
+            animation: slide-in 0.3s ease-out;
+        }
+        
+        .status-online {
+            box-shadow: 0 0 15px rgba(34, 197, 94, 0.5);
+        }
+        
+        .status-offline {
+            box-shadow: 0 0 15px rgba(239, 68, 68, 0.5);
+        }
+        
+        .progress-glow {
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.6);
+        }
+
+        /* Custom scrollbar */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #1f2937;
+            border-radius: 4px;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #4f46e5;
+            border-radius: 4px;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #6366f1;
+        }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen text-white overflow-x-hidden">
+    <!-- Neural Network Background Pattern -->
+    <div class="fixed inset-0 neural-pattern pointer-events-none"></div>
+    
+    <div class="relative z-10 container mx-auto px-6 py-8">
+        <!-- Header Section -->
+        <header class="mb-12 text-center">
+            <div class="float-animation inline-block">
+                <div class="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 bg-clip-text text-transparent">
+                    <h1 class="text-5xl md:text-7xl font-extrabold mb-4">AI Booking Agent</h1>
+                </div>
+            </div>
+            <p class="text-xl md:text-2xl text-gray-300 mb-8 font-light">
+                Professional Automated Ticket Booking System
+            </p>
+            <div class="flex justify-center items-center space-x-6">
+                <div id="connectionStatus" class="flex items-center space-x-2">
+                    <div id="connectionDot" class="w-3 h-3 rounded-full bg-red-500 animate-pulse status-offline"></div>
+                    <span id="connectionText" class="text-sm font-medium">Connecting to Server...</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <i data-lucide="shield-check" class="w-4 h-4 text-green-400"></i>
+                    <span class="text-sm text-green-400">Secure Connection</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Dashboard -->
+        <div class="grid grid-cols-1 xl:grid-cols-3 gap-8 mb-12">
+            <!-- User Configuration Panel -->
+            <div class="glass-effect rounded-2xl p-8 shadow-2xl hover:shadow-3xl transition-all duration-300">
+                <div class="flex items-center mb-6">
+                    <i data-lucide="user-circle" class="w-6 h-6 text-indigo-400 mr-3"></i>
+                    <h2 class="text-2xl font-bold">User Configuration</h2>
+                </div>
+                <div class="space-y-6">
+                    <div>
+                        <label class="block text-gray-300 mb-2 font-medium">Full Name *</label>
+                        <input type="text" id="userName" 
+                               class="w-full bg-gray-800/50 border border-gray-600 rounded-xl px-4 py-3 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all"
+                               placeholder="Enter your full name">
+                    </div>
+                    <div>
+                        <label class="block text-gray-300 mb-2 font-medium">Email Address *</label>
+                        <input type="email" id="userEmail"
+                               class="w-full bg-gray-800/50 border border-gray-600 rounded-xl px-4 py-3 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all"
+                               placeholder="your.email@example.com">
+                    </div>
+                    <div>
+                        <label class="block text-gray-300 mb-2 font-medium">Phone Number</label>
+                        <input type="tel" id="userPhone"
+                               class="w-full bg-gray-800/50 border border-gray-600 rounded-xl px-4 py-3 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all"
+                               placeholder="+1 (555) 123-4567">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Event Configuration Panel -->
+            <div class="glass-effect rounded-2xl p-8 shadow-2xl hover:shadow-3xl transition-all duration-300">
+                <div class="flex items-center mb-6">
+                    <i data-lucide="calendar-clock" class="w-6 h-6 text-purple-400 mr-3"></i>
+                    <h2 class="text-2xl font-bold">Event Details</h2>
+                </div>
+                <div class="space-y-6">
+                    <div>
+                        <label class="block text-gray-300 mb-2 font-medium">Booking Website URL *</label>
+                        <input type="url" id="eventUrl"
+                               class="w-full bg-gray-800/50 border border-gray-600 rounded-xl px-4 py-3 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all"
+                               placeholder="https://tickets.example.com">
+                    </div>
+                    <div>
+                        <label class="block text-gray-300 mb-2 font-medium">Ticket Release Time *</label>
+                        <input type="datetime-local" id="ticketReleaseTime"
+                               class="w-full bg-gray-800/50 border border-gray-600 rounded-xl px-4 py-3 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all">
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-gray-300 mb-2 font-medium">Ticket Quantity</label>
+                            <select id="ticketCount"
+                                    class="w-full bg-gray-800/50 border border-gray-600 rounded-xl px-4 py-3 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all">
+                                <option value="1">1 Ticket</option>
+                                <option value="2">2 Tickets</option>
+                                <option value="4" selected>4 Tickets</option>
+                                <option value="6">6 Tickets</option>
+                                <option value="8">8 Tickets</option>
+                                <option value="10">10 Tickets</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-gray-300 mb-2 font-medium">Max Retries</label>
+                            <select id="maxRetries"
+                                    class="w-full bg-gray-800/50 border border-gray-600 rounded-xl px-4 py-3 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all">
+                                <option value="3">3 Attempts</option>
+                                <option value="5" selected>5 Attempts</option>
+                                <option value="10">10 Attempts</option>
+                                <option value="20">20 Attempts</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AI Agent Control Panel -->
+            <div class="glass-effect rounded-2xl p-8 shadow-2xl hover:shadow-3xl transition-all duration-300">
+                <div class="flex items-center mb-6">
+                    <i data-lucide="brain-circuit" class="w-6 h-6 text-pink-400 mr-3"></i>
+                    <h2 class="text-2xl font-bold">AI Agent Control</h2>
+                </div>
+                
+                <div class="mb-8">
+                    <div id="agentStatus" class="mb-4">
+                        <div class="flex items-center mb-3">
+                            <div id="statusIndicator" class="w-4 h-4 rounded-full bg-red-500 mr-3 animate-pulse"></div>
+                            <span id="statusText" class="text-lg font-semibold">Inactive</span>
+                        </div>
+                        <div id="statusMessage" class="text-gray-400 text-sm mb-4">Agent is ready for configuration</div>
+                    </div>
+
+                    <!-- Progress Section -->
+                    <div id="progressSection" class="hidden mb-6">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-sm font-medium text-gray-300">Booking Progress</span>
+                            <span id="progressPercentage" class="text-sm font-medium text-indigo-400">0%</span>
+                        </div>
+                        <div class="w-full bg-gray-700 rounded-full h-3">
+                            <div id="progressBar" class="bg-gradient-to-r from-indigo-500 to-purple-600 h-3 rounded-full transition-all duration-500 progress-glow" style="width: 0%"></div>
+                        </div>
+                        <div id="progressText" class="text-xs text-gray-400 mt-2">0 / 0 tickets booked</div>
+                    </div>
+                </div>
+
+                <!-- Control Buttons -->
+                <div class="space-y-3">
+                    <button id="startAgentBtn" 
+                            class="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white py-4 px-6 rounded-xl font-semibold transition-all duration-300 transform hover:scale-[1.02] hover:shadow-2xl flex items-center justify-center space-x-2">
+                        <i data-lucide="play" class="w-5 h-5"></i>
+                        <span>Activate AI Agent</span>
+                    </button>
+                    
+                    <button id="stopAgentBtn" 
+                            class="w-full bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white py-4 px-6 rounded-xl font-semibold transition-all duration-300 transform hover:scale-[1.02] hover:shadow-2xl hidden flex items-center justify-center space-x-2">
+                        <i data-lucide="pause" class="w-5 h-5"></i>
+                        <span>Stop Agent</span>
+                    </button>
+                    
+                    <button id="resetAgentBtn" 
+                            class="w-full bg-gradient-to-r from-gray-600 to-gray-700 hover:from-gray-700 hover:to-gray-800 text-white py-4 px-6 rounded-xl font-semibold transition-all duration-300 transform hover:scale-[1.02] hover:shadow-2xl hidden flex items-center justify-center space-x-2">
+                        <i data-lucide="rotate-ccw" class="w-5 h-5"></i>
+                        <span>Reset System</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Real-time Analytics Dashboard -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+            <div class="glass-effect rounded-2xl p-6 text-center hover:shadow-2xl transition-all">
+                <div class="flex items-center justify-center mb-3">
+                    <i data-lucide="target" class="w-6 h-6 text-blue-400 mr-2"></i>
+                    <span class="text-gray-300 font-medium">Total Attempts</span>
+                </div>
+                <div id="totalAttempts" class="text-3xl font-bold text-blue-400">0</div>
+            </div>
+            
+            <div class="glass-effect rounded-2xl p-6 text-center hover:shadow-2xl transition-all">
+                <div class="flex items-center justify-center mb-3">
+                    <i data-lucide="check-circle" class="w-6 h-6 text-green-400 mr-2"></i>
+                    <span class="text-gray-300 font-medium">Successful Bookings</span>
+                </div>
+                <div id="successfulBookings" class="text-3xl font-bold text-green-400">0</div>
+            </div>
+            
+            <div class="glass-effect rounded-2xl p-6 text-center hover:shadow-2xl transition-all">
+                <div class="flex items-center justify-center mb-3">
+                    <i data-lucide="x-circle" class="w-6 h-6 text-red-400 mr-2"></i>
+                    <span class="text-gray-300 font-medium">Failed Attempts</span>
+                </div>
+                <div id="failedAttempts" class="text-3xl font-bold text-red-400">0</div>
+            </div>
+            
+            <div class="glass-effect rounded-2xl p-6 text-center hover:shadow-2xl transition-all">
+                <div class="flex items-center justify-center mb-3">
+                    <i data-lucide="clock" class="w-6 h-6 text-purple-400 mr-2"></i>
+                    <span class="text-gray-300 font-medium">Uptime</span>
+                </div>
+                <div id="uptime" class="text-3xl font-bold text-purple-400">00:00:00</div>
+            </div>
+        </div>
+
+        <!-- Countdown Timer -->
+        <div id="countdownContainer" class="glass-effect rounded-2xl p-8 text-center mb-12 hidden hover:shadow-3xl transition-all duration-300">
+            <div class="flex items-center justify-center mb-6">
+                <i data-lucide="timer" class="w-8 h-8 text-yellow-400 mr-3"></i>
+                <h3 class="text-2xl font-bold">Time Until Release</h3>
+            </div>
+            <div class="grid grid-cols-4 gap-6 max-w-2xl mx-auto">
+                <div class="glass-effect rounded-xl p-6 hover:scale-105 transition-transform">
+                    <div id="countdownDays" class="text-4xl font-bold text-yellow-400 mb-2">00</div>
+                    <div class="text-sm text-gray-400 uppercase tracking-wider">Days</div>
+                </div>
+                <div class="glass-effect rounded-xl p-6 hover:scale-105 transition-transform">
+                    <div id="countdownHours" class="text-4xl font-bold text-yellow-400 mb-2">00</div>
+                    <div class="text-sm text-gray-400 uppercase tracking-wider">Hours</div>
+                </div>
+                <div class="glass-effect rounded-xl p-6 hover:scale-105 transition-transform">
+                    <div id="countdownMinutes" class="text-4xl font-bold text-yellow-400 mb-2">00</div>
+                    <div class="text-sm text-gray-400 uppercase tracking-wider">Minutes</div>
+                </div>
+                <div class="glass-effect rounded-xl p-6 hover:scale-105 transition-transform">
+                    <div id="countdownSeconds" class="text-4xl font-bold text-yellow-400 mb-2">00</div>
+                    <div class="text-sm text-gray-400 uppercase tracking-wider">Seconds</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ticket Visualization -->
+        <div class="mb-12">
+            <div class="flex items-center justify-between mb-6">
+                <div class="flex items-center">
+                    <i data-lucide="ticket" class="w-6 h-6 text-indigo-400 mr-3"></i>
+                    <h2 class="text-2xl font-bold">Ticket Status</h2>
+                </div>
+                <div id="ticketSummary" class="text-sm text-gray-400">
+                    No tickets configured
+                </div>
+            </div>
+            <div id="ticketsContainer" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+                <div class="glass-effect rounded-xl p-6 text-center">
+                    <i data-lucide="ticket" class="w-8 h-8 text-gray-500 mx-auto mb-3"></i>
+                    <p class="text-gray-400 text-sm">Configure agent to see tickets</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Activity Log -->
+        <div class="glass-effect rounded-2xl p-8 hover:shadow-3xl transition-all duration-300">
+            <div class="flex items-center justify-between mb-6">
+                <div class="flex items-center">
+                    <i data-lucide="activity" class="w-6 h-6 text-green-400 mr-3"></i>
+                    <h2 class="text-2xl font-bold">System Activity Log</h2>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button id="exportLogsBtn" 
+                            class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm transition-colors flex items-center space-x-2">
+                        <i data-lucide="download" class="w-4 h-4"></i>
+                        <span>Export</span>
+                    </button>
+                    <button id="clearLogsBtn" 
+                            class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg text-sm transition-colors flex items-center space-x-2">
+                        <i data-lucide="trash-2" class="w-4 h-4"></i>
+                        <span>Clear</span>
+                    </button>
+                </div>
+            </div>
+            <div id="logContainer" class="bg-gray-900/50 rounded-xl p-4 h-80 overflow-y-auto custom-scrollbar">
+                <div class="log-entry flex items-start space-x-3 text-gray-300 mb-2">
+                    <i data-lucide="info" class="w-4 h-4 text-blue-400 mt-0.5 flex-shrink-0"></i>
+                    <div>
+                        <span class="text-blue-400 text-xs">[SYSTEM]</span>
+                        <span class="ml-2">AI Booking Agent initialized successfully</span>
+                    </div>
+                </div>
+                <div class="log-entry flex items-start space-x-3 text-gray-400 text-sm">
+                    <i data-lucide="zap" class="w-4 h-4 text-yellow-400 mt-0.5 flex-shrink-0"></i>
+                    <div>
+                        <span class="text-yellow-400 text-xs">[INFO]</span>
+                        <span class="ml-2">Ready to configure booking parameters</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-16 text-center text-gray-500">
+            <div class="flex items-center justify-center space-x-6 mb-4">
+                <div class="flex items-center space-x-2">
+                    <i data-lucide="shield" class="w-4 h-4"></i>
+                    <span class="text-sm">Secure & Professional</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <i data-lucide="cpu" class="w-4 h-4"></i>
+                    <span class="text-sm">AI-Powered</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <i data-lucide="zap" class="w-4 h-4"></i>
+                    <span class="text-sm">Lightning Fast</span>
+                </div>
+            </div>
+            <p class="text-sm">
+                Professional AI Booking Agent System - Use responsibly and in compliance with website terms of service
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        // Configuration
+        const API_BASE_URL = 'http://localhost:8000';
+        
+        // DOM Elements
+        const startAgentBtn = document.getElementById('startAgentBtn');
+        const stopAgentBtn = document.getElementById('stopAgentBtn');
+        const resetAgentBtn = document.getElementById('resetAgentBtn');
+        const clearLogsBtn = document.getElementById('clearLogsBtn');
+        const exportLogsBtn = document.getElementById('exportLogsBtn');
+        
+        const statusIndicator = document.getElementById('statusIndicator');
+        const statusText = document.getElementById('statusText');
+        const statusMessage = document.getElementById('statusMessage');
+        const progressSection = document.getElementById('progressSection');
+        const progressBar = document.getElementById('progressBar');
+        const progressPercentage = document.getElementById('progressPercentage');
+        const progressText = document.getElementById('progressText');
+        
+        const ticketsContainer = document.getElementById('ticketsContainer');
+        const ticketSummary = document.getElementById('ticketSummary');
+        const countdownContainer = document.getElementById('countdownContainer');
+        const logContainer = document.getElementById('logContainer');
+        
+        const connectionDot = document.getElementById('connectionDot');
+        const connectionText = document.getElementById('connectionText');
+        
+        // Statistics elements
+        const totalAttempts = document.getElementById('totalAttempts');
+        const successfulBookings = document.getElementById('successfulBookings');
+        const failedAttempts = document.getElementById('failedAttempts');
+        const uptime = document.getElementById('uptime');
+        
+        // Agent state
+        let agentState = {
+            isActive: false,
+            isConnected: false,
+            timerInterval: null,
+            statusInterval: null,
+            uptimeInterval: null,
+            startTime: null,
+            statistics: {
+                attempts: 0,
+                successful: 0,
+                failed: 0
+            },
+            logs: []
+        };
+
+        // Initialize application
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeApp();
+        });
+
+        // Initialize app
+        async function initializeApp() {
+            setupEventListeners();
+            await checkServerConnection();
+            setMinimumReleaseTime();
+            addLog('System initialized successfully', 'info', 'SYSTEM');
+            addLog('Ready for configuration', 'info', 'AI');
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            startAgentBtn.addEventListener('click', startAgent);
+            stopAgentBtn.addEventListener('click', stopAgent);
+            resetAgentBtn.addEventListener('click', resetAgent);
+            clearLogsBtn.addEventListener('click', clearLogs);
+            exportLogsBtn.addEventListener('click', exportLogs);
+            
+            // Form validation listeners
+            ['userName', 'userEmail', 'eventUrl', 'ticketReleaseTime'].forEach(id => {
+                document.getElementById(id).addEventListener('input', validateForm);
+            });
+        }
+
+        // Check server connection
+        async function checkServerConnection() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/health`, {
+                    method: 'GET',
+                    signal: AbortSignal.timeout(5000)
+                });
+                
+                if (response.ok) {
+                    updateConnectionStatus(true);
+                    addLog('Successfully connected to server', 'success', 'NETWORK');
+                } else {
+                    updateConnectionStatus(false);
+                    addLog('Server connection failed', 'error', 'NETWORK');
+                }
+            } catch (error) {
+                updateConnectionStatus(false);
+                addLog(`Connection error: ${error.message}`, 'error', 'NETWORK');
+                
+                // Retry connection every 30 seconds
+                setTimeout(checkServerConnection, 30000);
+            }
+        }
+
+        // Update connection status
+        function updateConnectionStatus(connected) {
+            agentState.isConnected = connected;
+            
+            if (connected) {
+                connectionDot.className = 'w-3 h-3 rounded-full bg-green-500 status-online';
+                connectionText.textContent = 'Server Connected';
+                connectionText.className = 'text-sm font-medium text-green-400';
+            } else {
+                connectionDot.className = 'w-3 h-3 rounded-full bg-red-500 animate-pulse status-offline';
+                connectionText.textContent = 'Server Disconnected';
+                connectionText.className = 'text-sm font-medium text-red-400';
+            }
+        }
+
+        // Set minimum release time
+        function setMinimumReleaseTime() {
+            const now = new Date();
+            now.setMinutes(now.getMinutes() + 5);
+            document.getElementById('ticketReleaseTime').min = now.toISOString().slice(0, 16);
+        }
+
+        // Validate form
+        function validateForm() {
+            const config = getFormData();
+            const isValid = validateConfiguration(config, false);
+            
+            // Update start button state
+            if (isValid && agentState.isConnected && !agentState.isActive) {
+                startAgentBtn.disabled = false;
+                startAgentBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+            } else {
+                startAgentBtn.disabled = true;
+                startAgentBtn.classList.add('opacity-50', 'cursor-not-allowed');
+            }
+        }
+
+        // Start AI agent
+        async function startAgent() {
+            if (!agentState.isConnected) {
+                addLog('Cannot start agent: Server not connected', 'error', 'AGENT');
+                return;
+            }
+
+            const config = getFormData();
+            
+            if (!validateConfiguration(config, true)) {
+                return;
+            }
+
+            try {
+                addLog('Initializing AI agent...', 'info', 'AGENT');
+                
+                // Configure the agent
+                const configResponse = await fetch(`${API_BASE_URL}/configure`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        website_url: config.eventUrl,
+                        release_time: config.releaseTime,
+                        ticket_count: parseInt(config.ticketCount),
+                        user_name: config.userName,
+                        user_email: config.userEmail,
+                        user_phone: config.userPhone,
+                        max_retries: parseInt(config.maxRetries),
+                        retry_delay: 2
+                    })
+                });
+
+                if (!configResponse.ok) {
+                    throw new Error('Failed to configure AI agent');
+                }
+
+                // Start the booking process
+                const startResponse = await fetch(`${API_BASE_URL}/start`, {
+                    method: 'POST'
+                });
+
+                if (!startResponse.ok) {
+                    throw new Error('Failed to start booking process');
+                }
+
+                // Update agent state
+                agentState.isActive = true;
+                agentState.startTime = new Date();
+                
+                updateAgentStatus('active', 'AI agent is preparing for ticket booking...');
+                updateControlButtons('active');
+                startCountdown(config.releaseTime);
+                startStatusPolling();
+                startUptimeCounter();
+                updateTicketDisplay(parseInt(config.ticketCount), 0);
+                
+                addLog(`AI agent activated successfully`, 'success', 'AGENT');
+                addLog(`Target URL: ${config.eventUrl}`, 'info', 'CONFIG');
+                addLog(`Release time: ${formatDateTime(new Date(config.releaseTime))}`, 'info', 'CONFIG');
+                addLog(`Tickets to book: ${config.ticketCount}`, 'info', 'CONFIG');
+                addLog(`Max retries: ${config.maxRetries}`, 'info', 'CONFIG');
+
+            } catch (error) {
+                addLog(`Failed to start agent: ${error.message}`, 'error', 'AGENT');
+                updateAgentStatus('error', 'Failed to initialize agent');
+            }
+        }
+
+        // Stop AI agent
+        async function stopAgent() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/stop`, {
+                    method: 'POST'
+                });
+
+                if (response.ok) {
+                    agentState.isActive = false;
+                    updateAgentStatus('stopped', 'Agent stopped by user');
+                    updateControlButtons('stopped');
+                    stopIntervals();
+                    addLog('AI agent stopped successfully', 'warning', 'AGENT');
+                } else {
+                    throw new Error('Failed to stop agent');
+                }
+            } catch (error) {
+                addLog(`Error stopping agent: ${error.message}`, 'error', 'AGENT');
+            }
+        }
+
+        // Reset AI agent
+        async function resetAgent() {
+            try {
+                // Stop agent first
+                if (agentState.isActive) {
+                    await stopAgent();
+                }
+                
+                // Reset state
+                agentState = {
+                    isActive: false,
+                    isConnected: agentState.isConnected,
+                    timerInterval: null,
+                    statusInterval: null,
+                    uptimeInterval: null,
+                    startTime: null,
+                    statistics: { attempts: 0, successful: 0, failed: 0 },
+                    logs: agentState.logs
+                };
+                
+                updateAgentStatus('reset', 'Agent ready for configuration');
+                updateControlButtons('reset');
+                updateStatistics();
+                resetTicketDisplay();
+                countdownContainer.classList.add('hidden');
+                progressSection.classList.add('hidden');
+                
+                // Clear form
+                document.getElementById('userName').value = '';
+                document.getElementById('userEmail').value = '';
+                document.getElementById('userPhone').value = '';
+                document.getElementById('eventUrl').value = '';
+                document.getElementById('ticketReleaseTime').value = '';
+                document.getElementById('ticketCount').value = '4';
+                document.getElementById('maxRetries').value = '5';
+                
+                addLog('System reset successfully', 'info', 'SYSTEM');
+                validateForm();
+
+            } catch (error) {
+                addLog(`Reset failed: ${error.message}`, 'error', 'SYSTEM');
+            }
+        }
+
+        // Get form data
+        function getFormData() {
+            return {
+                userName: document.getElementById('userName').value.trim(),
+                userEmail: document.getElementById('userEmail').value.trim(),
+                userPhone: document.getElementById('userPhone').value.trim(),
+                eventUrl: document.getElementById('eventUrl').value.trim(),
+                releaseTime: document.getElementById('ticketReleaseTime').value,
+                ticketCount: document.getElementById('ticketCount').value,
+                maxRetries: document.getElementById('maxRetries').value
+            };
+        }
+
+        // Validate configuration
+        function validateConfiguration(config, showErrors = true) {
+            const errors = [];
+
+            if (!config.userName) {
+                errors.push('Full name is required');
+            }
+
+            if (!config.userEmail) {
+                errors.push('Email address is required');
+            } else if (!isValidEmail(config.userEmail)) {
+                errors.push('Please enter a valid email address');
+            }
+
+            if (!config.eventUrl) {
+                errors.push('Booking website URL is required');
+            } else if (!isValidUrl(config.eventUrl)) {
+                errors.push('Please enter a valid website URL');
+            }
+
+            if (!config.releaseTime) {
+                errors.push('Ticket release time is required');
+            } else {
+                const releaseDate = new Date(config.releaseTime);
+                const now = new Date();
+                if (releaseDate <= now) {
+                    errors.push('Release time must be in the future');
+                }
+            }
+
+            if (showErrors && errors.length > 0) {
+                errors.forEach(error => addLog(error, 'error', 'VALIDATION'));
+            }
+
+            return errors.length === 0;
+        }
+
+        // Update agent status
+        function updateAgentStatus(state, message) {
+            const statusClasses = {
+                active: 'w-4 h-4 rounded-full bg-green-500 mr-3 pulse-glow',
+                stopped: 'w-4 h-4 rounded-full bg-orange-500 mr-3',
+                reset: 'w-4 h-4 rounded-full bg-gray-500 mr-3',
+                error: 'w-4 h-4 rounded-full bg-red-500 mr-3 animate-pulse'
+            };
+
+            const statusTexts = {
+                active: 'Active',
+                stopped: 'Stopped',
+                reset: 'Inactive',
+                error: 'Error'
+            };
+
+            statusIndicator.className = statusClasses[state];
+            statusText.textContent = statusTexts[state];
+            statusMessage.textContent = message;
+
+            if (state === 'active') {
+                progressSection.classList.remove('hidden');
+            }
+        }
+
+        // Update control buttons
+        function updateControlButtons(state) {
+            const buttons = [startAgentBtn, stopAgentBtn, resetAgentBtn];
+            buttons.forEach(btn => btn.classList.add('hidden'));
+
+            switch (state) {
+                case 'active':
+                    stopAgentBtn.classList.remove('hidden');
+                    resetAgentBtn.classList.remove('hidden');
+                    break;
+                case 'stopped':
+                    startAgentBtn.classList.remove('hidden');
+                    resetAgentBtn.classList.remove('hidden');
+                    break;
+                case 'reset':
+                    startAgentBtn.classList.remove('hidden');
+                    break;
+            }
+        }
+
+        // Start status polling
+        function startStatusPolling() {
+            agentState.statusInterval = setInterval(async () => {
+                try {
+                    const response = await fetch(`${API_BASE_URL}/status`);
+                    const status = await response.json();
+                    
+                    // Update status message
+                    statusMessage.textContent = status.current_status || 'AI agent working...';
+                    
+                    // Update progress
+                    const ticketCount = parseInt(document.getElementById('ticketCount').value);
+                    const progress = (status.booked_tickets / ticketCount) * 100;
+                    progressBar.style.width = `${Math.min(progress, 100)}%`;
+                    progressPercentage.textContent = `${Math.round(progress)}%`;
+                    progressText.textContent = `${status.booked_tickets} / ${ticketCount} tickets booked`;
+                    
+                    // Update statistics
+                    agentState.statistics.successful = status.booked_tickets;
+                    updateStatistics();
+                    
+                    // Update ticket display
+                    updateTicketDisplay(ticketCount, status.booked_tickets);
+                    
+                    // Handle errors
+                    if (status.errors && status.errors.length > 0) {
+                        const lastError = status.errors[status.errors.length - 1];
+                        if (!agentState.lastError || agentState.lastError !== lastError) {
+                            addLog(lastError, 'warning', 'AGENT');
+                            agentState.lastError = lastError;
+                            agentState.statistics.failed++;
+                        }
+                    }
+                    
+                    // Update attempts
+                    if (status.last_attempt && status.last_attempt !== 'Never') {
+                        agentState.statistics.attempts = Math.max(agentState.statistics.attempts, 1);
+                    }
+                    
+                    // Check if booking is complete
+                    if (status.booked_tickets >= ticketCount && status.booked_tickets > 0) {
+                        addLog(`🎉 Booking completed! Successfully booked ${status.booked_tickets} tickets`, 'success', 'AGENT');
+                        agentState.isActive = false;
+                        updateAgentStatus('stopped', `Successfully booked ${status.booked_tickets} tickets`);
+                        updateControlButtons('stopped');
+                        stopIntervals();
+                    }
+
+                } catch (error) {
+                    addLog(`Status polling error: ${error.message}`, 'error', 'SYSTEM');
+                }
+            }, 3000); // Poll every 3 seconds
+        }
+
+        // Start countdown timer
+        function startCountdown(endTime) {
+            const endDate = new Date(endTime);
+            countdownContainer.classList.remove('hidden');
+            
+            agentState.timerInterval = setInterval(() => {
+                const now = new Date().getTime();
+                const distance = endDate.getTime() - now;
+                
+                if (distance < 0) {
+                    clearInterval(agentState.timerInterval);
+                    addLog('🚀 Release time reached! AI agent is now attempting to book tickets...', 'info', 'AGENT');
+                    document.getElementById('countdownDays').textContent = '00';
+                    document.getElementById('countdownHours').textContent = '00';
+                    document.getElementById('countdownMinutes').textContent = '00';
+                    document.getElementById('countdownSeconds').textContent = '00';
+                    return;
+                }
+                
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                
+                document.getElementById('countdownDays').textContent = String(days).padStart(2, '0');
+                document.getElementById('countdownHours').textContent = String(hours).padStart(2, '0');
+                document.getElementById('countdownMinutes').textContent = String(minutes).padStart(2, '0');
+                document.getElementById('countdownSeconds').textContent = String(seconds).padStart(2, '0');
+            }, 1000);
+        }
+
+        // Start uptime counter
+        function startUptimeCounter() {
+            agentState.uptimeInterval = setInterval(() => {
+                if (agentState.startTime) {
+                    const now = new Date();
+                    const diff = now - agentState.startTime;
+                    const hours = Math.floor(diff / (1000 * 60 * 60));
+                    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+                    
+                    uptime.textContent = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+                }
+            }, 1000);
+        }
+
+        // Update ticket display
+        function updateTicketDisplay(total, booked) {
+            ticketsContainer.innerHTML = '';
+            ticketSummary.textContent = `${booked} of ${total} tickets booked`;
+            
+            for (let i = 0; i < total; i++) {
+                const ticketCard = document.createElement('div');
+                const isBooked = i < booked;
+                
+                ticketCard.className = `ticket-flip glass-effect rounded-xl p-4 text-center transition-all duration-500 hover:scale-105 ${
+                    isBooked ? 'bg-gradient-to-br from-green-600/20 to-emerald-600/20 border-green-500/50' : 
+                    'bg-gradient-to-br from-gray-600/20 to-gray-700/20 border-gray-500/50'
+                }`;
+                
+                ticketCard.innerHTML = `
+                    <div class="ticket-front">
+                        <div class="flex flex-col items-center">
+                            <i data-lucide="ticket" class="w-8 h-8 ${isBooked ? 'text-green-400' : 'text-gray-400'} mb-3"></i>
+                            <div class="text-lg font-bold mb-2">#${String(i + 1).padStart(2, '0')}</div>
+                            <div class="text-sm ${isBooked ? 'text-green-400' : 'text-gray-400'}">
+                                ${isBooked ? 'Booked' : 'Pending'}
+                            </div>
+                            ${isBooked ? `
+                                <div class="mt-3 text-xs text-green-300 text-center">
+                                    <div class="truncate">${document.getElementById('userName').value}</div>
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+                
+                ticketsContainer.appendChild(ticketCard);
+            }
+            
+            // Re-initialize Lucide icons for new elements
+            lucide.createIcons();
+        }
+
+        // Reset ticket display
+        function resetTicketDisplay() {
+            ticketsContainer.innerHTML = `
+                <div class="glass-effect rounded-xl p-6 text-center">
+                    <i data-lucide="ticket" class="w-8 h-8 text-gray-500 mx-auto mb-3"></i>
+                    <p class="text-gray-400 text-sm">Configure agent to see tickets</p>
+                </div>
+            `;
+            ticketSummary.textContent = 'No tickets configured';
+            lucide.createIcons();
+        }
+
+        // Update statistics
+        function updateStatistics() {
+            totalAttempts.textContent = agentState.statistics.attempts;
+            successfulBookings.textContent = agentState.statistics.successful;
+            failedAttempts.textContent = agentState.statistics.failed;
+        }
+
+        // Stop all intervals
+        function stopIntervals() {
+            if (agentState.timerInterval) {
+                clearInterval(agentState.timerInterval);
+                agentState.timerInterval = null;
+            }
+            if (agentState.statusInterval) {
+                clearInterval(agentState.statusInterval);
+                agentState.statusInterval = null;
+            }
+            if (agentState.uptimeInterval) {
+                clearInterval(agentState.uptimeInterval);
+                agentState.uptimeInterval = null;
+            }
+        }
+
+        // Add log entry
+        function addLog(message, type = 'info', category = 'SYSTEM') {
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = {
+                timestamp,
+                message,
+                type,
+                category
+            };
+            
+            agentState.logs.unshift(logEntry);
+            
+            // Keep only last 100 logs
+            if (agentState.logs.length > 100) {
+                agentState.logs = agentState.logs.slice(0, 100);
+            }
+            
+            renderLogs();
+        }
+
+        // Render logs
+        function renderLogs() {
+            const logIcons = {
+                info: 'info',
+                success: 'check-circle',
+                warning: 'alert-triangle',
+                error: 'x-circle'
+            };
+            
+            const logColors = {
+                info: 'text-blue-400',
+                success: 'text-green-400',
+                warning: 'text-yellow-400',
+                error: 'text-red-400'
+            };
+
+            logContainer.innerHTML = agentState.logs.map(log => `
+                <div class="log-entry flex items-start space-x-3 mb-3 text-sm">
+                    <i data-lucide="${logIcons[log.type]}" class="w-4 h-4 ${logColors[log.type]} mt-0.5 flex-shrink-0"></i>
+                    <div class="flex-1">
+                        <span class="${logColors[log.type]} text-xs font-medium">[${log.category}]</span>
+                        <span class="text-gray-500 text-xs ml-2">${log.timestamp}</span>
+                        <div class="text-gray-300 mt-1">${log.message}</div>
+                    </div>
+                </div>
+            `).join('');
+            
+            // Re-initialize Lucide icons
+            lucide.createIcons();
+            
+            // Auto-scroll to top
+            logContainer.scrollTop = 0;
+        }
+
+        // Clear logs
+        function clearLogs() {
+            agentState.logs = [];
+            renderLogs();
+            addLog('Activity log cleared', 'info', 'SYSTEM');
+        }
+
+        // Export logs
+        function exportLogs() {
+            const exportData = {
+                timestamp: new Date().toISOString(),
+                logs: agentState.logs,
+                statistics: agentState.statistics
+            };
+            
+            const blob = new Blob([JSON.stringify(exportData, null, 2)], {
+                type: 'application/json'
+            });
+            
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `booking-agent-logs-${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            addLog('Activity log exported successfully', 'success', 'SYSTEM');
+        }
+
+        // Utility functions
+        function isValidEmail(email) {
+            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        }
+
+        function isValidUrl(string) {
+            try {
+                new URL(string);
+                return true;
+            } catch (_) {
+                return false;
+            }
+        }
+
+        function formatDateTime(date) {
+            return date.toLocaleDateString('en-US', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+        }
+
+        // Initialize form validation on page load
+        setTimeout(validateForm, 100);
+    </script>
+</body>
+</html>
